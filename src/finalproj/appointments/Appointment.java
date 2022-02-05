@@ -2,6 +2,7 @@ package finalproj.appointments;
 
 import java.awt.Image;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Appointment {
@@ -60,6 +61,10 @@ public class Appointment {
 	
 	public float getQuote() {
 		return quote;
+	}
+	
+	public static Appointment createAppointment(LocalDate date, String fullName, String notes) {
+		return new Appointment(date, fullName, notes, new ArrayList<Image>(), null);
 	}
 	
 	public static Appointment createAppointment(LocalDate date, String fullName, String notes, List<Image> references) {
