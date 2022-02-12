@@ -15,10 +15,11 @@ public class AppointmentSingleton {
 		
 	}
 	
-	public List<Appointment> getAppointmentsOnDate(LocalDate date){
-		
-		if (appointments.containsKey(date)) return appointments.get(date);
-		return new ArrayList<Appointment>();
+	public AppointmentIterator getAppointmentsOnDate(LocalDate date){
+		Appointment[] apps;
+		if (appointments.containsKey(date)) apps = appointments.get(date).toArray(new Appointment[0]);
+		else apps = new Appointment[0];
+		return new AppointmentIterator(apps);
 	}
 	
 	public void addAppointment(LocalDate date, Appointment appointment) {

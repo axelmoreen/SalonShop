@@ -29,10 +29,11 @@ public class Tests {
 	public void testAppointmentSingleton() {
 		AppointmentSingleton.getInstance().addAppointment(LocalDate.now(), 
 				Appointment.createAppointment(LocalDate.now(), "test_name", "test_notes"));
-		List<Appointment> apps = AppointmentSingleton.getInstance().getAppointmentsOnDate(LocalDate.now());
-		Assert.assertEquals(apps.size(), 1);
-		Appointment appointment = apps.get(0);
+		AppointmentIterator apps = AppointmentSingleton.getInstance().getAppointmentsOnDate(LocalDate.now());
+		Assert.assertEquals(apps.hasNext(), true);
+		Appointment appointment = apps.next();
 		Assert.assertEquals(appointment.getCustomerName(), "test_name");
 		Assert.assertEquals(appointment.getNotes(), "test_notes");
+		Assert.assertEquals(apps.hasNext(), false);
 	}
 }
