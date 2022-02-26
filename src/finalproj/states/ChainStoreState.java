@@ -1,6 +1,6 @@
 package finalproj.states;
 
-public class ChainStoreState extends SmallBusinessState{
+public class ChainStoreState extends GameState{
 
 	@Override
 	public String[] commands() {

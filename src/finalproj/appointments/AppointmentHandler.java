@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class AppointmentSingleton {
-	private static AppointmentSingleton instance;
+public class AppointmentHandler {
 	
 	private HashMap<LocalDate, List<Appointment>> appointments;
 	
-	public AppointmentSingleton() {
+	public AppointmentHandler() {
 		appointments = new HashMap<LocalDate, List<Appointment>>();
 		
 	}
@@ -34,11 +33,4 @@ public class AppointmentSingleton {
 		appointments.put(date,  list);
 	}
 	
-	public static AppointmentSingleton getInstance() {
-		if (instance == null) {
-			instance = new AppointmentSingleton();
-		}
-		
-		return instance;
-	}
 }
