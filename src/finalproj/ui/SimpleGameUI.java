@@ -21,13 +21,13 @@ import finalproj.Game;
 
 public class SimpleGameUI implements ActionListener, GameUI{
 
-	GameMessageProxy proxy;
+	SwingGameMessageProxy proxy;
 	JTree tree;
 	JTextField inputField;
 	JLabel summary;
 	
 	public SimpleGameUI() {
-		proxy = new GameMessageProxy();
+		proxy = new SwingGameMessageProxy();
 		tree = new JTree(new DefaultMutableTreeNode("Loading..."));
 		inputField = new JTextField();
 		summary = new JLabel("<html>Welcome to Salon Shop!<br>Let's get started.</html>");
@@ -80,7 +80,7 @@ public class SimpleGameUI implements ActionListener, GameUI{
 		summary.setText("<html>"+javaText.replace("\n", "<br>")+"<\\html>");
 	}
 	
-	public GameMessageProxy getMessageProxy() {
+	public SwingGameMessageProxy getMessageProxy() {
 		return proxy;
 	}
 	
