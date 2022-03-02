@@ -6,18 +6,26 @@ import java.util.Random;
 
 import finalproj.appointments.AppointmentHandler;
 
-public class BarberShop {
+public class SalonShop {
 	
 	private String name;
 	private Location location;
 	private List<Barber> barbers;
 	private AppointmentHandler appointments;
+	private boolean hasManager;
 	
-	public BarberShop(String name, Location location) {
+	
+	public SalonShop(String name, Location location) {
 		this.name = name;
 		this.location = location;
 		this.barbers = new ArrayList<Barber>();
 		this.appointments = new AppointmentHandler();
+		this.hasManager = false;
+	}
+	
+	
+	public boolean hasManager() {
+		return hasManager;
 	}
 	
 	public void addBarber(Barber barber) {
@@ -44,6 +52,17 @@ public class BarberShop {
 		//to do, process sale/ add to net worth etc
 	}
 	
+	public AppointmentHandler getAppointmentHandler() {
+		return appointments;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public Location getLocation() {
+		return location;
+	}
 
 	
 	

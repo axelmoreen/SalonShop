@@ -12,6 +12,7 @@ import finalproj.states.GameState;
 import finalproj.states.GrandOpeningState;
 import finalproj.states.MonopolyState;
 import finalproj.states.SmallBusinessState;
+import finalproj.ui.GameUI;
 
 public class Game {
 	
@@ -64,17 +65,17 @@ public class Game {
 	private List<Integer> reviews;
 	private int popularity;
 	private int cutCost;
+	private GameUI ui;
 	
 	private LocalDate today;
-	
-	
-	private List<BarberShop> shops;
+
+	private List<SalonShop> shops;
 	
 	private Game() {
 		random = new Random();
 		netWorth = startingMoney;
 		reviews  = new ArrayList<Integer>();
-		shops = new ArrayList<BarberShop>();
+		shops = new ArrayList<SalonShop>();
 		startingName = shopNames[random.nextInt(shopNames.length)];
 		gameState = new GrandOpeningState();
 		today = startingDay;
@@ -82,21 +83,40 @@ public class Game {
 		popularity = 1;
 		cutCost = defaultCutCost;
 		
-		shops.add(new BarberShop(startingName, BarberShop.Location.randomLocation(random)));
+		shops.add(new SalonShop(startingName, SalonShop.Location.randomLocation(random)));
 		shops.get(0).addBarber(getNewBarber());
 	}
 
+	
+	public void tick() {
+		//TODO update date
+		
+		evaluateGameState();
+		this.gameState.tick();
+		
+		//update UI
+		this.ui.updateState();
+		this.ticksElapsed++;
+	}
+	public LocalDate getDate() {
+		return today;
+	}
+	
 	private Barber getNewBarber() {
-		return new Barber(barberNames[random.nextInt(barberNames.length)]);
+		return new Barber(barberNames[random.nextInt(barberNames.length)], random.nextInt(5)+1);
 	}
 	
 	
-	public List<BarberShop> getShops(){
+	public List<SalonShop> getShops(){
 		return shops;
 	}
 	
 	public Random getRandom() {
 		return random;
+	}
+	
+	public void handleCommand(String command) {
+		this.gameState.input(command);
 	}
 	
 	private void evaluateGameState() {
@@ -124,7 +144,7 @@ public class Game {
 	}
 	
 	public void queueMessage(String message) {
-		
+		ui.getMessageProxy().handleMessage(message, ticksElapsed);
 	}
 	
 	public void addReview(int review) {
@@ -137,6 +157,10 @@ public class Game {
 	
 	public GameState getCurrentState() {
 		return gameState;
+	}
+	
+	public void setUI(GameUI ui) {
+		this.ui = ui;
 	}
 	
 	public String getYelpScore() {

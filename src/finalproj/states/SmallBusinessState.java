@@ -13,7 +13,7 @@ public class SmallBusinessState extends GameState{
 	@Override
 	public String[] commands() {
 		// TODO Auto-generated method stub
-		return null;
+		return new String[0];
 	}
 
 }

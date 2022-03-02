@@ -1,8 +1,9 @@
 package finalproj.states;
 
 import finalproj.Barber;
-import finalproj.BarberShop;
+import finalproj.SalonShop;
 import finalproj.Game;
+import finalproj.appointments.AppointmentIterator;
 
 public abstract class GameState {
 	
@@ -11,9 +12,10 @@ public abstract class GameState {
 	}
 	
 	public void tick() {
-		for (BarberShop shop : Game.getInstance().getShops()) {
+		for (SalonShop shop : Game.getInstance().getShops()) {
 			/// shop tick
 			shop.checkAvailabilities();
+			AppointmentIterator appoint = shop.getAppointmentHandler().getAppointmentsOnDate(Game.getInstance().getDate());
 			while (Game.getInstance().getRandom().nextFloat() < customerChance()) {
 				// walk in customer
 				for (Barber barber : shop.getBarbers()) {

@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import finalproj.appointments.Appointment;
 import finalproj.appointments.AppointmentIterator;
+import finalproj.ui.GameUI;
+import finalproj.ui.SimpleGameUI;
 import finalproj.appointments.AppointmentHandler;
 import junit.framework.Assert;
 
@@ -36,4 +38,11 @@ public class Tests {
 		Assert.assertEquals(appointment.getNotes(), "test_notes");
 		Assert.assertEquals(apps.hasNext(), false);
 	}*/
+	
+	@Test
+	public void testSimpleUI() {
+		GameUI ui = new SimpleGameUI();
+		ui.createAndShow();
+		ui.getMessageProxy().handleMessage("Test Message", 0);
+	}
 }
