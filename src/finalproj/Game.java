@@ -51,16 +51,22 @@ public class Game {
 	private final Timer timer;
 	
 	private final int barberSalary = 5000;
-	private final int leaseMonth = 4000;
+	private final int managerSalary = 6000;
+	private final float baseInflation = 1.01f;
+	private final int baseLease = 4000;
+	private final int baseUtilities = 200;
+	private final int baseTrainingCost = 2000;
 	private final int startingMoney = 20000;
 	private final int defaultCutCost = 50;
 	private final int dayTicks = 20; // ticks per day
 	private final int fastSpeed = 50; // ms
-	private final int slowSpeed = 300;
+	private final int slowSpeed = 800;
 	private final float baseCustomerChance = 0.01f / dayTicks;
 	private final int minCompetingChain = 1000000;
 	private final int maxCompetingChain = 10000000;
 	private final int monopolyAmount = 5000000;
+	private final int baseAdvertiseCost = 5000;
+	private final float baseAdvertiseExponent = 1.5f;
 	private final LocalDate startingDay = LocalDate.of(2010, Month.JANUARY, 1);
 	private final LocalTime timeOpen = LocalTime.of(8,0,0);
 	private final LocalTime timeClosed = LocalTime.of(20,0,0);
@@ -93,7 +99,7 @@ public class Game {
 		gameState = new GrandOpeningState();
 		today = startingDay;
 		ticksElapsed = 0;
-		popularity = 1;
+		popularity = 0;
 		cutCost = defaultCutCost;
 		cash = startingMoney;
 		
@@ -116,7 +122,14 @@ public class Game {
 		timer.setDelay(1);
 	}
 	
-
+	public void setStartingName(String name) {
+		this.startingName = name;
+		this.getShops().get(0).setName(name);
+	}
+	
+	public String getRandomName() {
+		return shopNames[random.nextInt(shopNames.length)];
+	}
 	public void startTimer() {
 		timer.start();
 	}
@@ -153,6 +166,33 @@ public class Game {
 		return today;
 	}
 	
+	public int getLeaseCost(boolean future) {
+		int days = Math.floorDiv(ticksElapsed, dayTicks);
+		if (future) days += today.lengthOfMonth()-today.getDayOfMonth();
+		
+		return (int)Math.floor(baseLease * Math.pow(baseInflation, days));
+	}
+	public int getUtilitiesCost(boolean future) {
+		int days = Math.floorDiv(ticksElapsed, dayTicks);
+		if (future) days += today.lengthOfMonth()-today.getDayOfMonth();
+				
+		return (int)Math.floor(baseUtilities * Math.pow(baseInflation, days));
+	}
+	
+	public int getTrainingCost() {
+		int days = Math.floorDiv(ticksElapsed, dayTicks);
+		int inflated = (int)Math.floor(baseTrainingCost * Math.pow(baseInflation,  days));
+		return inflated * getNumberOfEmployees(EmployeeType.BARBER);
+	}
+	
+	public int getBarberSalary() {
+		return barberSalary;
+	}
+	
+	public int getManagerSalary() {
+		return managerSalary;
+	}
+	
 	public LocalTime getTimeOfDay() {
 		Duration leng = Duration.between(timeOpen, timeClosed);
 		Duration unit = leng.dividedBy(dayTicks);
@@ -160,7 +200,7 @@ public class Game {
 	}
 	
 	public boolean isNewDay() {
-		return ticksElapsed % dayTicks == 0;
+		return (ticksElapsed % dayTicks) == 0;
 	}
 	
 	public int getMoney() {
@@ -171,7 +211,53 @@ public class Game {
 		return netWorth;
 	}
 	
-	public int getNumberOfEmployees() {
+	public int getPopularity() {
+		return popularity;
+	}
+	
+	public int getAdvertisingCost() {
+		return (int)Math.floor(baseAdvertiseCost * Math.pow(baseAdvertiseExponent, popularity));
+	}
+	
+	public boolean buyPopularity() {
+		int cost = getAdvertisingCost();
+		if (cost > cash) {
+			return false;
+		}
+		cash -= cost;
+		popularity += 1;
+		return true;
+	}
+	
+	public boolean runTraining(SalonShop shop) {
+		int cost = getTrainingCost();
+		if (cost > cash) return false;
+		
+		for (Barber barber : shop.getBarbers()) {
+			barber.train();
+		}
+		cash -= cost;
+		return true;
+	}
+	
+	public String hireBarber(SalonShop shop) {
+		int cost = getBarberSalary();
+		if (cost > cash) return null;
+		Barber barb = getNewBarber();
+		shop.addBarber(barb);
+		
+		return barb.getName();
+	}
+	
+	public boolean hireManager(SalonShop shop) {
+		int cost = getManagerSalary();
+		if (cost > cash) return false;
+		shop.hireManager();
+		
+		return true;
+	}
+	
+	public int getNumberOfEmployees() { // for ui
 		if (hasEmployeesUpdate) {
 			int temp = 0;
 			for (SalonShop salon : shops) {
@@ -184,10 +270,31 @@ public class Game {
 		return lastEmployeeNumber;
 	}
 	
-	private Barber getNewBarber() {
+	public int getNumberOfEmployees(EmployeeType type) { // for other uses
+
+		int temp = 0;
+		for (SalonShop salon : shops) {
+			if (type != EmployeeType.MANAGER) temp += salon.getBarbers().size();
+			if (type != EmployeeType.BARBER && salon.hasManager()) temp += 1;
+			
+		}
+		return temp;
+	}
+
+	
+	public Barber getNewBarber() {
+		hasEmployeesUpdate = true;
+		hasTreeUpdate = true;
 		return new Barber(barberNames[random.nextInt(barberNames.length)], random.nextInt(5)+1);
 	}
 	
+	public SalonShop getNewSalon(String name) {
+		hasTreeUpdate = true;
+		if (name == null) {
+			return new SalonShop(shopNames[random.nextInt(shopNames.length)], SalonShop.Location.randomLocation(random));
+		}
+		return new SalonShop(name, SalonShop.Location.randomLocation(random));
+	}
 	
 	public List<SalonShop> getShops(){
 		return shops;
@@ -225,6 +332,10 @@ public class Game {
 		return Math.min(1, 0.2f * baseCustomerChance * popularity * rev / reviews.size());
 	}
 	
+	public boolean hasTreeUpdate() {
+		return hasTreeUpdate;
+	}
+	
 	public void queueUserMessage(String message) {
 		ui.getMessageProxy().handleMessage(message, ticksElapsed);
 	}
@@ -259,6 +370,10 @@ public class Game {
 	
 	public int ticksElapsed() {
 		return ticksElapsed;
+	}
+	
+	public void stopTimer() {
+		timer.stop();
 	}
 	
 	public static Game getInstance() {

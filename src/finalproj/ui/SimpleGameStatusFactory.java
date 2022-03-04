@@ -21,13 +21,11 @@ public class SimpleGameStatusFactory {
 		}
 		String date = game.getDate().toString();
 		String money = String.valueOf(game.getMoney());
-		String worth = String.valueOf(game.getNetWorth());
 		String employees = String.valueOf(game.getNumberOfEmployees());
 		
 		out = name+"\n"+
 				date +" "+timeForm.format(game.getTimeOfDay())+"\n"+
 				"Cash: "+money+"\n"+
-				"Net worth: "+worth+"\n"+
 				"Employees: "+employees;
 		return out;
 	}

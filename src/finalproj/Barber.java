@@ -40,6 +40,10 @@ public class Barber {
 		return skillLevel;
 	}
 	
+	public void train() {
+		skillLevel = skillLevel + 2;
+	}
+	
 	public enum BarberStatus{
 		AVAILABLE,
 		BUSY,

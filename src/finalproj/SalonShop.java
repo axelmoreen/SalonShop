@@ -52,6 +52,10 @@ public class SalonShop {
 		//to do, process sale/ add to net worth etc
 	}
 	
+	public void hireManager() {
+		this.hasManager = true;
+	}
+	
 	public AppointmentHandler getAppointmentHandler() {
 		return appointments;
 	}
@@ -62,6 +66,10 @@ public class SalonShop {
 	
 	public Location getLocation() {
 		return location;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	

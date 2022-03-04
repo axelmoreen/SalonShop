@@ -100,12 +100,14 @@ public class SimpleGameUI implements ActionListener, GameUI{
 	public void updateState() {
 		proxy.tick();
 		proxy.doTextUpdate();
-		//TODO minimize tree updates
-		List<DefaultMutableTreeNode> shops = new ArrayList<DefaultMutableTreeNode>();
-		for (SalonShop salon : Game.getInstance().getShops()) {
-			shops.add(ShopTreeFactory.createTree(salon));
+		
+		if (Game.getInstance().hasTreeUpdate()) {
+			List<DefaultMutableTreeNode> shops = new ArrayList<DefaultMutableTreeNode>();
+			for (SalonShop salon : Game.getInstance().getShops()) {
+				shops.add(ShopTreeFactory.createTree(salon));
+			}
+			fullUpdateTree(shops);
 		}
-		fullUpdateTree(shops);
 		setSummary(SimpleGameStatusFactory.getGameStatus(Game.getInstance()));
 	}
 }
