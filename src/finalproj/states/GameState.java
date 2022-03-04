@@ -1,5 +1,7 @@
 package finalproj.states;
 
+import java.util.Arrays;
+
 import finalproj.Barber;
 import finalproj.SalonShop;
 import finalproj.Game;
@@ -27,12 +29,34 @@ public abstract class GameState {
 		}
 		
 		String[] commands = Game.getInstance().getCurrentState().commands();
-		Game.getInstance().queueMessage("Enter a command: ("+String.join("/", commands)+")");
+		if (Game.getInstance().isNewDay()) {
+			Game.getInstance().queueUserMessage("Enter a command: ("+String.join("/", commands)+")");
+		}
 	}
 	
 	public void input(String command) {
-		Game.getInstance().queueMessage("Unknown command: "+command.toLowerCase());
+		if (command.equalsIgnoreCase("slowdown") || command.equalsIgnoreCase("slow")) {
+			if (Game.getInstance().isFast()) {
+				Game.getInstance().toggleFast();
+			}
+		}
+		else if (command.equalsIgnoreCase("fastforward") || command.equalsIgnoreCase("ff")) {
+			if (!Game.getInstance().isFast()) {
+				Game.getInstance().toggleFast();
+			}
+		}
+		else {
+			Game.getInstance().queueUserMessage("Unknown command: "+command.toLowerCase());
+		}
 	}
 	
-	public abstract String[] commands();
+	public String[] commands() {
+		return new String[] {(Game.getInstance().isFast() ? "slowdown" : "fastforward")};
+	}
+	
+	protected String[] concat(String[] arr1, String[] arr2) {
+		String[] both = Arrays.copyOf(arr1, arr1.length + arr2.length);
+		System.arraycopy(arr2,  0, both, arr1.length, arr2.length);
+		return both;
+	}
 }

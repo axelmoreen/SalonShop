@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -18,16 +19,17 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import finalproj.Game;
+import finalproj.SalonShop;
 
 public class SimpleGameUI implements ActionListener, GameUI{
 
-	SwingGameMessageProxy proxy;
+	SimpleGameMessageProxy proxy;
 	JTree tree;
 	JTextField inputField;
 	JLabel summary;
 	
 	public SimpleGameUI() {
-		proxy = new SwingGameMessageProxy();
+		proxy = new SimpleGameMessageProxy();
 		tree = new JTree(new DefaultMutableTreeNode("Loading..."));
 		inputField = new JTextField();
 		summary = new JLabel("<html>Welcome to Salon Shop!<br>Let's get started.</html>");
@@ -74,13 +76,14 @@ public class SimpleGameUI implements ActionListener, GameUI{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Game.getInstance().handleCommand(inputField.getText());
+		inputField.setText("");
 	}
 	
 	public void setSummary(String javaText) {
-		summary.setText("<html>"+javaText.replace("\n", "<br>")+"<\\html>");
+		summary.setText("<html>"+javaText.replace("\n", "<br>")+"");
 	}
 	
-	public SwingGameMessageProxy getMessageProxy() {
+	public GameMessageProxy getMessageProxy() {
 		return proxy;
 	}
 	
@@ -95,6 +98,14 @@ public class SimpleGameUI implements ActionListener, GameUI{
 	}
 	
 	public void updateState() {
+		proxy.tick();
 		proxy.doTextUpdate();
+		//TODO minimize tree updates
+		List<DefaultMutableTreeNode> shops = new ArrayList<DefaultMutableTreeNode>();
+		for (SalonShop salon : Game.getInstance().getShops()) {
+			shops.add(ShopTreeFactory.createTree(salon));
+		}
+		fullUpdateTree(shops);
+		setSummary(SimpleGameStatusFactory.getGameStatus(Game.getInstance()));
 	}
 }

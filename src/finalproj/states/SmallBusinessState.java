@@ -13,7 +13,8 @@ public class SmallBusinessState extends GameState{
 	@Override
 	public String[] commands() {
 		// TODO Auto-generated method stub
-		return new String[0];
+		String[] newCommands = new String[] {};
+		return concat(newCommands, super.commands());
 	}
 
 }

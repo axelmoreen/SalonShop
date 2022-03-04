@@ -1,23 +1,25 @@
 package finalproj.ui;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JTextArea;
 
 import finalproj.Game;
 
-public class SwingGameMessageProxy extends JTextArea implements GameMessageProxy{
+public class SimpleGameMessageProxy extends JTextArea implements GameMessageProxy{
 	private final int rows = 17;
 	private final int columns= 100;
 	private final int ticksOn = 30;
 	
-	private LinkedList<Map.Entry<String, Integer>> messageBuffer = new LinkedList<Map.Entry<String, Integer>>();
+	private List<Map.Entry<String, Integer>> messageBuffer = Collections.synchronizedList(new LinkedList<Map.Entry<String, Integer>>());
 	
-	public SwingGameMessageProxy() {
+	public SimpleGameMessageProxy() {
 		this.setRows(rows);
 		this.setColumns(columns);
 		this.setEditable(false);
@@ -29,20 +31,23 @@ public class SwingGameMessageProxy extends JTextArea implements GameMessageProxy
 	}
 	
 	private void flushBefore(int tickBefore) {
+		
 		while (messageBuffer.size() > rows) {
-			messageBuffer.removeFirst();
+			messageBuffer.remove(0);
 		}
+		
+		
 		//LinkedList<String> sortedKeys = new LinkedList<String>();
-		//List<Map.Entry<String, Integer>> toRemove = new ArrayList<Map.Entry<String, Integer>>();
+		List<Map.Entry<String, Integer>> toRemove = new ArrayList<Map.Entry<String, Integer>>();
 		for (Map.Entry<String,Integer> entry : messageBuffer) {
 			if (entry.getValue() < tickBefore) {
-				//toRemove.add(entry);
-				messageBuffer.removeFirst();
+				toRemove.add(entry);
+				//messageBuffer.remove(0);
 			}
 		}
-		//for (Map.Entry<String, Integer> entry : toRemove) {
-		//	messageBuffer.remove(entry);
-		//}
+		for (Map.Entry<String, Integer> entry : toRemove) {
+			messageBuffer.remove(entry);
+		}
 		
 	}
 	
@@ -55,7 +60,7 @@ public class SwingGameMessageProxy extends JTextArea implements GameMessageProxy
 		for (Map.Entry<String, Integer> entry : messageBuffer) {
 			lines.add(entry.getKey());
 		}
-		System.out.println(lines.size());
+		
 		this.setText(String.join("\n", lines));
 	}
 	
