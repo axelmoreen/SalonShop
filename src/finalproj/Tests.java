@@ -45,4 +45,9 @@ public class Tests {
 		ui.createAndShow();
 		ui.getMessageProxy().handleMessage("Test Message", 0);
 	}
+	
+	@Test
+	public void testChance() {
+		Assert.assertEquals(Game.getInstance().getCustomerChance() > 0, true);
+	}
 }

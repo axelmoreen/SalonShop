@@ -12,10 +12,11 @@ import java.util.Random;
 
 import javax.swing.Timer;
 
-import finalproj.states.ChainStoreState;
+import finalproj.states.BankruptState;
+//import finalproj.states.ChainStoreState;
 import finalproj.states.GameState;
 import finalproj.states.GrandOpeningState;
-import finalproj.states.MonopolyState;
+//import finalproj.states.MonopolyState;
 import finalproj.states.SmallBusinessState;
 import finalproj.ui.GameUI;
 
@@ -47,6 +48,9 @@ public class Game {
 			"Olivia", "Emma", "Ava", "Charlotte", "Sophia", "Amelia", "Isabella", "Mia", "Evelyn", "Harper"
 	};
 	
+	private static final String[] hints = new String[] {"Make sure you keep enough cash to pay your monthly costs!",
+			"Send your barbers to training so they learn more haircuts!"};
+	
 	private final Random random;
 	private final Timer timer;
 	
@@ -56,12 +60,12 @@ public class Game {
 	private final int baseLease = 4000;
 	private final int baseUtilities = 200;
 	private final int baseTrainingCost = 2000;
-	private final int startingMoney = 20000;
-	private final int defaultCutCost = 50;
-	private final int dayTicks = 20; // ticks per day
+	private final int startingMoney = 50000;
+	private final int defaultCutCost = 80;
+	private final int dayTicks = 35; // ticks per day
 	private final int fastSpeed = 50; // ms
-	private final int slowSpeed = 800;
-	private final float baseCustomerChance = 0.01f / dayTicks;
+	private final int slowSpeed = 1500;
+	private final float baseCustomerChance = 2f / dayTicks;
 	private final int minCompetingChain = 1000000;
 	private final int maxCompetingChain = 10000000;
 	private final int monopolyAmount = 5000000;
@@ -70,6 +74,7 @@ public class Game {
 	private final LocalDate startingDay = LocalDate.of(2010, Month.JANUARY, 1);
 	private final LocalTime timeOpen = LocalTime.of(8,0,0);
 	private final LocalTime timeClosed = LocalTime.of(20,0,0);
+	private final int bankruptValue = -20000;
 	
 	private String startingName;
 	private GameState gameState;
@@ -89,6 +94,7 @@ public class Game {
 	public boolean hasEmployeesUpdate;
 	private boolean fast;
 	private int lastEmployeeNumber;
+	private boolean running;
 	
 	private Game() {
 		random = new Random();
@@ -114,12 +120,13 @@ public class Game {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				tick();
+				if (running) tick();
 			}
 			
 		});
 		timer.setInitialDelay(1);
 		timer.setDelay(1);
+		running = true;
 	}
 	
 	public void setStartingName(String name) {
@@ -229,6 +236,17 @@ public class Game {
 		return true;
 	}
 	
+	public void addMoney(int amount) {
+		this.cash += amount;
+	}
+	
+	public void takeMoney(int amount) {
+		this.cash = this.cash - amount;
+	}
+	
+	public int getPrice() {
+		return defaultCutCost;
+	}
 	public boolean runTraining(SalonShop shop) {
 		int cost = getTrainingCost();
 		if (cost > cash) return false;
@@ -281,6 +299,9 @@ public class Game {
 		return temp;
 	}
 
+	public void setHasTreeUpdate(boolean val) {
+		hasTreeUpdate = val;
+	}
 	
 	public Barber getNewBarber() {
 		hasEmployeesUpdate = true;
@@ -314,22 +335,26 @@ public class Game {
 				gameState = new SmallBusinessState();
 			}
 			
-			if (shops.size() > 1 && gameState instanceof SmallBusinessState) {
+			/*if (shops.size() > 1 && gameState instanceof SmallBusinessState) {
 				gameState = new ChainStoreState();
 			}
 			
 			if (netWorth > monopolyAmount) {
 				gameState = new MonopolyState();
-			}
+			}*/
+		}
+		
+		if (cash < bankruptValue) {
+			gameState = new BankruptState();
 		}
 	}
 	
 	public float getCustomerChance() {
-		int rev = 0;
+		/*int rev = 0;
 		for (int review : reviews) {
 			rev += review;
-		}
-		return Math.min(1, 0.2f * baseCustomerChance * popularity * rev / reviews.size());
+		}*/
+		return Math.min(1, 0.2f * baseCustomerChance * (popularity +1 ));
 	}
 	
 	public boolean hasTreeUpdate() {
@@ -374,6 +399,7 @@ public class Game {
 	
 	public void stopTimer() {
 		timer.stop();
+		running = false;
 	}
 	
 	public static Game getInstance() {

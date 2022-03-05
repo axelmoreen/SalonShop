@@ -15,7 +15,7 @@ import finalproj.Game;
 public class SimpleGameMessageProxy extends JTextArea implements GameMessageProxy{
 	private final int rows = 17;
 	private final int columns= 100;
-	private final int ticksOn = 30;
+	private final int ticksOn = 60;
 	
 	private List<Map.Entry<String, Integer>> messageBuffer = Collections.synchronizedList(new LinkedList<Map.Entry<String, Integer>>());
 	

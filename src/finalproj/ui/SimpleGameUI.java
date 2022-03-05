@@ -97,6 +97,13 @@ public class SimpleGameUI implements ActionListener, GameUI{
 		tree.setModel(new DefaultTreeModel(root));
 	}
 	
+	public void expandTree(){
+		int row = 1;
+		while (row++ < tree.getRowCount()){
+			tree.expandRow(row);
+		}
+	}
+	
 	public void updateState() {
 		proxy.tick();
 		proxy.doTextUpdate();
@@ -107,6 +114,8 @@ public class SimpleGameUI implements ActionListener, GameUI{
 				shops.add(ShopTreeFactory.createTree(salon));
 			}
 			fullUpdateTree(shops);
+			expandTree();
+			Game.getInstance().setHasTreeUpdate(false);
 		}
 		setSummary(SimpleGameStatusFactory.getGameStatus(Game.getInstance()));
 	}

@@ -49,7 +49,8 @@ public class SalonShop {
 	}
 	
 	public void processCustomer() {
-		//to do, process sale/ add to net worth etc
+		Game.getInstance().addMoney(Game.getInstance().getPrice());
+		//TODO add yelp review?
 	}
 	
 	public void hireManager() {

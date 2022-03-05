@@ -16,9 +16,11 @@ public class Main {
 		System.out.println("Starting Salon Shop...");
 		String startName = (String)JOptionPane.showInputDialog(
                 "Hooray! You just bought your dream salon. Pick a name:", Game.getInstance().getRandomName());
-		
+		if (startName != null) {
+			Game.getInstance().setStartingName(startName);
+		}
 		GameUI ui = new SimpleGameUI();
-		Game.getInstance().setStartingName(startName);
+		
 		Game.getInstance().setUI(ui);
 		Game.getInstance().startTimer();		
 		ui.createAndShow();

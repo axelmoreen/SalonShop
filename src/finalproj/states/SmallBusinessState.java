@@ -33,7 +33,7 @@ public class SmallBusinessState extends GameState{
 			String[] args = input.split(" ");
 			if (args.length < 2) {
 				reply("To hire a barber, type 'hire barber'.");
-				reply("To hire a manager, type 'hire manager'.");
+				//reply("To hire a manager, type 'hire manager'.");
 			}
 			else {
 				if (args[1].equalsIgnoreCase("barber")) {
@@ -45,12 +45,12 @@ public class SmallBusinessState extends GameState{
 						reply("Welcome to the team, "+b+"!");
 					}
 				}else if (args[1].equalsIgnoreCase("manager")) {
-					if (Game.getInstance().hireManager(Game.getInstance().getShops().get(0))) {
-						reply("You hired a manager!");
-					}
-					else {
-						reply("Not enough money.");
-					}
+					//if (Game.getInstance().hireManager(Game.getInstance().getShops().get(0))) {
+					//	reply("You hired a manager!");
+					//}
+					//else {
+					//	reply("Not enough money.");
+					//}
 				}
 			}
 		}

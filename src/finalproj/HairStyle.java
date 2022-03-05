@@ -1,5 +1,7 @@
 package finalproj;
 
+import java.util.Random;
+
 public enum HairStyle {
 	HIGH_FADE("High Fade", "Sharp fade for a clean and sharp appearance.",3),
 	MID_FADE("Mid Fade", "An evenly distributed fade that's stylish and classy.", 4),
@@ -36,5 +38,9 @@ public enum HairStyle {
 	
 	public int getDifficulty() {
 		return difficulty;
+	}
+	
+	public static HairStyle randomValue(Random random) {
+		return HairStyle.values()[random.nextInt(HairStyle.values().length)];
 	}
 }

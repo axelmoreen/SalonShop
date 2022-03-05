@@ -5,7 +5,7 @@ import finalproj.Game;
 public class GrandOpeningState extends SmallBusinessState{
 
 	protected float customerChance() {
-		return 10 * Game.getInstance().getCustomerChance();
+		return 5 * Game.getInstance().getCustomerChance();
 	}
 	
 	public void tick() {
