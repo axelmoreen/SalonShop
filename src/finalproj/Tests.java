@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import finalproj.appointments.Appointment;
 import finalproj.appointments.AppointmentIterator;
 import finalproj.ui.GameUI;
+import finalproj.ui.SimpleGameMessageProxy;
+import finalproj.ui.SimpleGameStatusFactory;
 import finalproj.ui.SimpleGameUI;
 import finalproj.appointments.AppointmentHandler;
 import junit.framework.Assert;
@@ -49,5 +51,17 @@ public class Tests {
 	@Test
 	public void testChance() {
 		Assert.assertEquals(Game.getInstance().getCustomerChance() > 0, true);
+	}
+	
+	@Test
+	public void testProxy() {
+		SimpleGameMessageProxy prox = new SimpleGameMessageProxy();
+		prox.handleMessage("test", 0);
+	}
+	
+	@Test
+	public void testFactory() {
+		String status = SimpleGameStatusFactory.getGameStatus(Game.getInstance());
+		System.out.println(status);
 	}
 }

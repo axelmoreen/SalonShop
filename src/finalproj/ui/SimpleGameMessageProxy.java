@@ -1,5 +1,6 @@
 package finalproj.ui;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,7 +53,7 @@ public class SimpleGameMessageProxy extends JTextArea implements GameMessageProx
 	}
 	
 	public void handleMessage(String message, int tickAt) {
-		messageBuffer.add(Map.entry(message, tickAt));
+		messageBuffer.add(new AbstractMap.SimpleEntry<String,Integer>(message, tickAt));
 	}
 	
 	public void doTextUpdate() {
